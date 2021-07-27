@@ -198,8 +198,8 @@
 
   function parse_gps(input){
 
-    if( input.indexOf( 'N' ) == -1 && input.indexOf( 'S' ) == -1 &&
-        input.indexOf( 'W' ) == -1 && input.indexOf( 'E' ) == -1 ) {
+    // Only parse as coordinates if in some degree/hour/minute N/S/E/W form
+    if (!/^([nwse]?\s*(\d+[°'"]\s*){1,3}\s*[nwse]?\s*){2}$/i.test(input)) {
         return input.split(',');
     }
 
