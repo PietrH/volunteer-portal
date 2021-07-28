@@ -3,10 +3,12 @@ package au.org.ala.volunteer
 import grails.transaction.Transactional
 import org.springframework.web.multipart.MultipartFile
 
+import au.org.ala.web.AlaSecured
+
+@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class FrontPageController {
 
     def index() {
-
         redirect(action: "edit", params: params)
     }
 

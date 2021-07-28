@@ -1,5 +1,6 @@
 package au.org.ala.volunteer
 
+import au.org.ala.web.AlaSecured
 import groovy.time.TimeCategory
 import org.elasticsearch.action.search.SearchType
 import grails.plugins.csv.CSVWriter
@@ -9,6 +10,7 @@ import org.springframework.web.multipart.MultipartFile
 
 import java.text.SimpleDateFormat
 
+@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class AdminController {
 
     def taskService

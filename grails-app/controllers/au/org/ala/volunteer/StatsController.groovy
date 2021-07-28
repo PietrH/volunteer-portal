@@ -1,8 +1,10 @@
 package au.org.ala.volunteer
 
 import au.com.bytecode.opencsv.CSVWriter
+import au.org.ala.web.AlaSecured
 import grails.converters.JSON
 
+@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class StatsController {
 
     static int defaultDayDiff = 7;

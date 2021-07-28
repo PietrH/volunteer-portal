@@ -5,11 +5,13 @@ import grails.converters.JSON
 import groovy.json.JsonOutput
 import org.apache.commons.lang3.StringEscapeUtils
 import grails.plugins.csv.CSVWriter
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN
 
 class PicklistController {
 
     static allowedMethods = [upload: "POST", save: "POST", update: "POST", delete: "POST"]
 
+    def userService
     def picklistService
     def imagesWebService
     def imageServiceService
@@ -37,6 +39,10 @@ class PicklistController {
     }
 
     def manage () {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN)
+        }
+
         def picklistInstitutionCodes = [""]
         picklistInstitutionCodes.addAll(picklistService.getInstitutionCodes())
         [picklistInstanceList: Picklist.list(), collectionCodes: picklistInstitutionCodes]

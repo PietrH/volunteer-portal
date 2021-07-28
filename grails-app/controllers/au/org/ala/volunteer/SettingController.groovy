@@ -1,8 +1,9 @@
 package au.org.ala.volunteer
 
+import au.org.ala.web.AlaSecured
 import java.lang.reflect.Modifier
 
-
+@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class SettingController {
 
     def settingsService

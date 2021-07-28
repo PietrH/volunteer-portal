@@ -1,5 +1,6 @@
 package au.org.ala.volunteer
 
+import au.org.ala.web.AlaSecured
 import grails.converters.JSON
 import groovy.time.TimeCategory
 import grails.web.servlet.mvc.GrailsParameterMap
@@ -11,6 +12,7 @@ import javax.servlet.http.HttpServletResponse
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 
+@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class TaskController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST", viewTask: "POST"]
