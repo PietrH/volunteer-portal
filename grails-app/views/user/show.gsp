@@ -457,7 +457,6 @@
         selectedTab: selectedTab,
         defaultLatitude: grailsApplication.config.location.default.latitude,
         defaultLongitude: grailsApplication.config.location.default.longitude,
-        userInstance: userInstance,
         project: project,
         isValidator: isValidator,
         isAdmin: isAdmin,
