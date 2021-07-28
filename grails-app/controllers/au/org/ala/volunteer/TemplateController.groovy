@@ -2,6 +2,7 @@ package au.org.ala.volunteer
 
 import grails.converters.JSON
 import org.springframework.web.multipart.MultipartFile
+import static javax.servlet.http.HttpServletResponse.SC_FORBIDDEN
 
 class TemplateController {
 
@@ -16,6 +17,10 @@ class TemplateController {
     }
 
     def list() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN)
+        }
+
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [templateInstanceList: Template.list(params), templateInstanceTotal: Template.count()]
     }

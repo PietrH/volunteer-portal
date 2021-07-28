@@ -392,6 +392,10 @@ class ProjectController {
     }
 
     def editGeneralSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -411,6 +415,10 @@ class ProjectController {
     }
 
     def editTutorialLinksSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -421,6 +429,10 @@ class ProjectController {
     }
 
     def editPicklistSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -434,6 +446,10 @@ class ProjectController {
     }
 
     def editMapSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -444,6 +460,10 @@ class ProjectController {
     }
 
     def editBannerImageSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -454,6 +474,10 @@ class ProjectController {
     }
 
     def editBackgroundImageSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -464,6 +488,10 @@ class ProjectController {
     }
 
     def editTaskSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -475,6 +503,10 @@ class ProjectController {
     }
 
     def editNewsItemsSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (!projectInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'project.label', default: 'Project'), params.id])}"
@@ -486,6 +518,9 @@ class ProjectController {
     }
 
     def updateGeneralSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
 
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
@@ -514,6 +549,10 @@ class ProjectController {
     }
 
     def update() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
             if (!saveProjectSettingsFromParams(projectInstance, params)) {
@@ -528,6 +567,10 @@ class ProjectController {
     }
 
     def updateTutorialLinksSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
             if (!saveProjectSettingsFromParams(projectInstance, params)) {
@@ -543,6 +586,9 @@ class ProjectController {
     }
 
     def updateNewsItemsSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
 
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
@@ -559,18 +605,29 @@ class ProjectController {
 
 
     def deleteAllTasksFragment() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         def taskCount = Task.countByProject(projectInstance)
         [projectInstance: projectInstance, taskCount: taskCount]
     }
 
     def deleteProjectFragment() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         def taskCount = Task.countByProject(projectInstance)
         [projectInstance: projectInstance, taskCount: taskCount]
     }
 
     private boolean saveProjectSettingsFromParams(Project projectInstance, GrailsParameterMap params) {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
 
         if (projectInstance) {
             if (params.version) {
@@ -592,6 +649,10 @@ class ProjectController {
     }
 
     def updatePicklistSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
             if (!saveProjectSettingsFromParams(projectInstance, params)) {
@@ -608,6 +669,10 @@ class ProjectController {
 
 
     def delete() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
         if (projectInstance) {
             try {
@@ -627,6 +692,10 @@ class ProjectController {
     }
     
     def uploadFeaturedImage() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
 
         projectInstance.featuredImageCopyright = params.featuredImageCopyright
@@ -663,6 +732,10 @@ class ProjectController {
     }
 
     def uploadBackgroundImage() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.id)
 
         projectInstance.backgroundImageAttribution = params.backgroundImageAttribution
@@ -705,6 +778,10 @@ class ProjectController {
 
 
     def clearBackgroundImageSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         Project projectInstance = Project.get(params.id)
         if (projectInstance) {
             projectInstance.backgroundImageAttribution = null
@@ -717,6 +794,10 @@ class ProjectController {
     }
 
     def resizeExpeditionImage() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (projectInstance) {
             projectService.checkAndResizeExpeditionImage(projectInstance)
@@ -725,6 +806,10 @@ class ProjectController {
     }
 
     def setLeaderIconIndex() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         if (params.id) {
             def project = Project.get(params.id)
             if (project) {
@@ -750,6 +835,10 @@ class ProjectController {
     }
 
     def updateMapSettings() {
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         def projectInstance = Project.get(params.int("id"))
         if (projectInstance) {
             def showMap = params.showMap == "on"
@@ -861,6 +950,12 @@ class ProjectController {
     }
 
     def wizard(String id) {
+        render userService.currentUser.getUserRoles() as JSON
+
+        if (!userService.isAdmin()) {
+            response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
+        }
+
         if (!id) {
             def stagingId = UUID.randomUUID().toString()
             projectStagingService.ensureStagingDirectoryExists(stagingId)
@@ -992,6 +1087,7 @@ class ProjectController {
         if (!userService.isAdmin()) {
             response.sendError(SC_FORBIDDEN, message(code: 'project.backend.permssion'))
         }
+
         try {
             def body = request.getJSON()
             body.createdBy = userService.getCurrentUserId()
