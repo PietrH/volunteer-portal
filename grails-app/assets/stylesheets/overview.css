@@ -1,0 +1,34 @@
+.quickPreview {
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 250px;
+    overflow: hidden;
+    background: lightgrey center;
+}
+
+.quickPreview img {
+    height: 100%;
+    object-fit: scale-down;
+    pointer-events: none;
+    transition: opacity 0.5s;
+}
+
+.actions {
+    width: fit-content;
+    margin: auto;
+}
+
+.task-card-status {
+    position: absolute;
+    top: 0;
+    right: 0;
+    background-color: #d5502a;
+    color: #ffffff;
+    padding: 4px 8px;
+}
+
+.lg-bootbox > div.modal-dialog {
+    width: 95%;
+}

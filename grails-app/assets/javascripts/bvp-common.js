@@ -19,37 +19,45 @@ var bvp = {};
             hideHeader: options.hideHeader ? options.hideHeader : false,
             onClose: options.onClose || noop,
             onShown: options.onShown || noop,
+            onContentLoaded: options.onContentLoaded || noop,
             buttons: options.buttons ? options.buttons : null
         };
 
+        var dialog = bootbox.dialog({
+            message: '<p><i class="fa fa-spin fa-spinner"></i> Loading...</p>',
+            title: options.title,
+            backdrop: options.backdrop,
+            onEscape: true,
+            buttons: options.buttons,
+            size: opts.size,
+            width: opts.width,
+            className: opts.className
+        });
+
+        //Fixes event handling when using bootbox for dialogs
+        dialog.on('shown.bs.modal', function(e) {
+            if (opts.onShown) {
+                opts.onShown();
+            }
+        });
+
+        dialog.on('hidden.bs.modal', function(e) {
+            opts.onClose();
+            // Pop this modal off the history stack. Will only work on browsers that support window history
+            if (window.history && window.history.pushState) {
+                var current = window.history.state;
+                if (current && current["bvp-modal"]) {
+                    window.history.back(1);
+                }
+            }
+        });
+
         $.get(opts.url, function(html) {
-            var dialog = bootbox.dialog({
-                message: html,
-                title: options.title,
-                backdrop: options.backdrop,
-                onEscape: true,
-                buttons: options.buttons,
-                size: opts.size,
-                className: opts.className
-            });
+            dialog.find('.bootbox-body').html(html);
 
-            //Fixes event handling when using bootbox for dialogs
-            dialog.on('hidden.bs.modal', function(e) {
-                opts.onClose();
-                // Pop this modal off the history stack. Will only work on browsers that support window history
-                if (window.history && window.history.pushState) {
-                    var current = window.history.state;
-                    if (current && current["bvp-modal"]) {
-                        window.history.back(1);
-                    }
-                }
-            });
-
-            dialog.on('shown.bs.modal', function(e) {
-                if (opts.onShown) {
-                    opts.onShown();
-                }
-            });
+            if (opts.onContentLoaded) {
+                opts.onContentLoaded();
+            }
         });
 
         // hook the back button so that it closes the window. Only works on browsers that support window.history and window.history.popstate

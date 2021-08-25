@@ -209,6 +209,49 @@ class TranscribeController {
         }
     }
 
+    def showTaskWithId() {
+        def project = Project.get(params.projectId)
+        def task = Task.get(params.taskId)
+
+        if (project == null) {
+            log.error("Project not found for id: " + params.projectId)
+            redirect(view: '/index')
+        }
+
+        if (task == null) {
+            log.error("Task not found for id: " + params.taskId)
+            redirect(view: '/index')
+        }
+
+        log.debug("project id = " + params.id + " || msg = " + params.msg + " || prevInt = " + params.prevId)
+
+        if (params.msg) {
+            flash.message = params.msg
+        }
+
+        def currentUserId = userService.currentUserId
+        def isNotAdmin = !userService.isAdmin()
+        boolean isLockedByOtherUser = auditService.isTaskLockedForUser(task, currentUserId)
+
+        if (isLockedByOtherUser) {
+            flash.message  = "${message(code: 'transcribe.task_is_viewed_by_another_user')}"
+            if (isNotAdmin) {
+                def availableTask = taskService.getNextTask(currentUserId, project)
+                if (!availableTask) {
+                    log.debug "1."
+                    render(view: 'noTasks', model: [complete: params.complete])
+                } else {
+                    redirect(controller: 'overview', action: 'showProjectOverview', id: project?.id)
+                }
+                return
+            } else {
+                flash.message = "${message(code: 'transcribe.this_task_is_locked_by_another_user')}"
+            }
+        }
+
+        redirect(action: 'task', id: task.id, params: [complete: params.complete, msg: flash.msg])
+    }
+
     def geolocationToolFragment() {
     }
 

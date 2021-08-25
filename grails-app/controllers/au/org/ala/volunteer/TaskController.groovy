@@ -28,9 +28,19 @@ class TaskController {
     def stagingService
     def auditService
     def multimediaService
+    def projectService
 
     def load() {
         [projectList: Project.list()]
+    }
+
+    boolean checkAdmin() {
+        if(!userService.isAdmin()) {
+            flash.message = "You do not have permission to view this page"
+            redirect(url: "/")
+            return false
+        }
+        return true
     }
 
     def project() {
@@ -46,9 +56,11 @@ class TaskController {
     }
 
     def projectAdmin() {
-        def currentUser = userService.currentUserId
+        if (!checkAdmin()) {
+            return
+        }
         def project = Project.get(params.int("id"))
-        if (project && currentUser && userService.isValidator(project)) {
+        if (projectService.isAdminForProject(project)) {
             renderProjectListWithSearch(params, "adminList")
         } else {
             flash.message = message(code: 'taskController.no_permission')
@@ -165,6 +177,9 @@ class TaskController {
      * Webservice for Google Maps to display task details in infowindow
      */
     def details() {
+        if (!checkAdmin()) {
+            return
+        }
         def id = params.int('id')
         def sid = params.id
         def taskInstance = Task.get(params.int('id'))
@@ -177,6 +192,9 @@ class TaskController {
     }
 
     def loadCSV() {
+        if (!checkAdmin()) {
+            return
+        }
         def projectId = params.int('projectId')
 
         if (params.csv) {
@@ -186,6 +204,9 @@ class TaskController {
     }
 
     def loadCSVAsync() {
+        if (!checkAdmin()) {
+            return
+        }
         def projectId = params.int('projectId')
         def replaceDuplicates = params.duplicateMode == 'replace'
         if (projectId && params.csv) {
@@ -207,11 +228,17 @@ class TaskController {
     }
 
     def index() {
+        if (!checkAdmin()) {
+            return
+        }
         redirect(action: "list", params: params)
     }
 
     /** list all tasks  */
     def list() {
+        if (!checkAdmin()) {
+            return
+        }
         params.max = Math.min(params.max ? params.int('max') : 20, 50)
         params.order = params.order ? params.order : "asc"
         params.sort = params.sort ? params.sort : "id"
@@ -232,19 +259,19 @@ class TaskController {
     }
 
     def create() {
-        def currentUser = userService.currentUserId
-
-        if (currentUser != null && userService.isAdmin()) {
-            def taskInstance = new Task()
-            taskInstance.properties = params
-            return [taskInstance: taskInstance]
-        } else {
-            flash.message = message(code: 'admin.you_do_not_have_permission')
-            redirect(view: '/index')
+        if (!checkAdmin()) {
+            return
         }
+
+        def taskInstance = new Task()
+        taskInstance.properties = params
+        return [taskInstance: taskInstance]
     }
 
     def save() {
+        if (!checkAdmin()) {
+            return
+        }
         def taskInstance = new Task(params)
         if (taskInstance.save(flush: true)) {
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'task.label', default: 'Task'), taskInstance.id])}"
@@ -256,6 +283,9 @@ class TaskController {
     }
 
     def showDetails() {
+        if (!checkAdmin()) {
+            return
+        }
         def taskInstance = Task.get(params.int('id'))
 
         def c = Field.createCriteria()
