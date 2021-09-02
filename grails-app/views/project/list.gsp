@@ -19,6 +19,7 @@
 
     <section id="main-content">
         <div class="container">
+            <cl:messages />
             <div class="row">
                 <div class="col-sm-8">
                     <div class="row">

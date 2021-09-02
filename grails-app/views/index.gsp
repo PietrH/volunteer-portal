@@ -19,6 +19,8 @@
 <div class="a-feature home" style="${frontPage.heroImage ? "background-image: url('${grailsApplication.config.server.url}/${grailsApplication.config.images.urlPrefix}/hero/${frontPage.heroImage}');" : ''}">
     <div class="container">
 
+        <cl:messages />
+
         <h1><g:message code="index.heading.line1" /><br/><g:message code="index.heading.line2"/><br/><g:message code="index.heading.line3"/></h1>
 
         <h2><g:message code="index.subheading" /></h2>

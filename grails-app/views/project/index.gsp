@@ -39,6 +39,7 @@
 <div class="a-feature expedition ${bgImage ? '' : 'old'}">
     <div class="container">
         <div class="row">
+            <cl:messages />
             <div class="col-sm-12">
                 <div class="logo-holder">
                     <img src="<cl:institutionLogoUrl id="${projectInstance.institution?.id?:-1}"/>" class="img-responsive institution-logo-main">
