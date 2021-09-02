@@ -12,7 +12,6 @@ import javax.servlet.http.HttpServletResponse
 import static javax.servlet.http.HttpServletResponse.SC_NO_CONTENT
 import static javax.servlet.http.HttpServletResponse.SC_BAD_REQUEST
 
-@AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class TaskController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST", viewTask: "POST"]
@@ -56,11 +55,8 @@ class TaskController {
     }
 
     def projectAdmin() {
-        if (!checkAdmin()) {
-            return
-        }
         def project = Project.get(params.int("id"))
-        if (projectService.isAdminForProject(project)) {
+        if (projectService.isAdminForProject(project) || userService.isValidator(project)) {
             renderProjectListWithSearch(params, "adminList")
         } else {
             flash.message = message(code: 'taskController.no_permission')
