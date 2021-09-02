@@ -2,6 +2,8 @@ package au.org.ala.volunteer
 
 class Task implements Serializable {
 
+    def grailsApplication
+
     //Project project
     String externalIdentifier
     String externalUrl
@@ -56,7 +58,7 @@ class Task implements Serializable {
 
     // These events use a static method rather than an injected service
     // to prevent issues with serialisation in webflows
-    
+
     // Executed after an object is persisted to the database
     def afterInsert() {
         GormEventDebouncer.debounceTask(this.id)
@@ -68,5 +70,36 @@ class Task implements Serializable {
     // Executed after an object has been deleted
     def afterDelete() {
         GormEventDebouncer.debounceDeleteTask(this.id)
+    }
+
+    def status(userId) {
+        if (fullyValidatedBy != null) return TaskStatus.validated
+
+        if (fullyTranscribedBy != null) return TaskStatus.transcribed
+
+        def timeoutWindow = System.currentTimeMillis() - ((grailsApplication.config.viewedTask.timeout as long) ?: 7200000)
+        if (lastViewedBy == null
+                || lastViewedBy == userId
+                || lastViewed < timeoutWindow) return TaskStatus.open
+
+        else return TaskStatus.currentlyUsed
+    }
+
+    def isAvailableForTranscription(userId) {
+        return status(userId) == TaskStatus.open
+    }
+
+}
+
+enum TaskStatus {
+    validated("taskStatus.validated"),
+    transcribed("taskStatus.transcribed"),
+    currentlyUsed("taskStatus.currentlyUsed"),
+    open("taskStatus.open")
+
+    def i18nLabel
+
+    TaskStatus(String i18nLabel) {
+        this.i18nLabel = i18nLabel
     }
 }

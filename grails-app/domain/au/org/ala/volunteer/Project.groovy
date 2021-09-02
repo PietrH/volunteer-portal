@@ -39,6 +39,7 @@ class Project implements Serializable {
     Double mapInitLatitude
     Double mapInitLongitude
     Boolean harvestableByAla = true
+    Boolean hasOverviewPage = false
     Boolean archived = false
 
     Date dateCreated
@@ -63,6 +64,7 @@ class Project implements Serializable {
         template lazy: false
         newsItems sort: 'created', order: 'desc', cascade: 'all,delete-orphan'
         harvestableByAla defaultValue: true
+        hasOverviewPage defaultValue: false
         version defaultValue: '0'
         archived defaultValue: 'false'
     }
@@ -88,6 +90,7 @@ class Project implements Serializable {
         mapInitLatitude nullable: true
         mapInitLongitude nullable: true
         harvestableByAla nullable: true
+        hasOverviewPage nullable: true
         createdBy nullable: true
 
         i18nName blank: false, nullable: false, lazy: false

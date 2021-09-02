@@ -39,6 +39,7 @@
 <div class="a-feature expedition ${bgImage ? '' : 'old'}">
     <div class="container">
         <div class="row">
+            <cl:messages />
             <div class="col-sm-12">
                 <div class="logo-holder">
                     <img src="<cl:institutionLogoUrl id="${projectInstance.institution?.id?:-1}"/>" class="img-responsive institution-logo-main">
@@ -54,7 +55,12 @@
                 </div>
                 <div class="cta-primary">
                     <g:if test="${percentComplete < 100}">
-                        <a href="${createLink(controller: 'transcribe', action: 'index', id: projectInstance.id)}" class="btn btn-primary btn-lg" role="button"><g:message code="project.get_started" /> <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        <g:if test="${projectInstance.hasOverviewPage}">
+                            <a href="${createLink(controller: 'overview', action: 'index', id: projectInstance.id)}" class="btn btn-primary btn-lg" role="button"><g:message code="project.get_started" /> <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        </g:if>
+                        <g:else>
+                            <a href="${createLink(controller: 'transcribe', action: 'index', id: projectInstance.id)}" class="btn btn-primary btn-lg" role="button"><g:message code="project.get_started" /> <span class="glyphicon glyphicon-arrow-right"></span></a>
+                        </g:else>
                         <g:if test="${projectInstance.i18nTutorialLinks}">
                             <a href="${(projectInstance.i18nTutorialLinks?.toString() ? '#tutorial' : createLink(controller: 'tutorials', action: 'index'))}" class="btn btn-lg btn-hollow ${oldClass} tutorial"><g:message code="project.view_tutorial" /></a>
                             <div id="tutorialContent" class="hidden">${raw(projectInstance.i18nTutorialLinks?.toString())}</div>

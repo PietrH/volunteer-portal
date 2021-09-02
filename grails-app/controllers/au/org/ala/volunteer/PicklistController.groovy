@@ -20,7 +20,20 @@ class PicklistController {
         redirect(action: "list", params: params)
     }
 
-    def load () {}
+    boolean checkAdmin() {
+        if(!userService.isAdmin()) {
+            flash.message = "You do not have permission to view this page"
+            redirect(url: "/")
+            return false
+        }
+        return true
+    }
+
+    def load () {
+        if(checkAdmin()) {
+            render(view: "load")
+        }
+    }
 
     def upload () {
         picklistService.load(params.name, params.picklist)
@@ -39,10 +52,9 @@ class PicklistController {
     }
 
     def manage () {
-        if (!userService.isAdmin()) {
-            response.sendError(SC_FORBIDDEN)
+        if (!checkAdmin()) {
+            return
         }
-
         def picklistInstitutionCodes = [""]
         picklistInstitutionCodes.addAll(picklistService.getInstitutionCodes())
         [picklistInstanceList: Picklist.list(), collectionCodes: picklistInstitutionCodes]
@@ -63,6 +75,9 @@ class PicklistController {
     }
 
     def images(Picklist picklistInstance) {
+        if (!checkAdmin()) {
+            return
+        }
         def inst = params.institution
 
         def items
@@ -73,6 +88,9 @@ class PicklistController {
     }
 
     def wildcount(Picklist picklistInstance) {
+        if (!checkAdmin()) {
+            return
+        }
         def inst = params.institutionCode
 
         def items
@@ -189,6 +207,9 @@ class PicklistController {
     }
 
     def download () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklist = Picklist.get(params.picklistId)
         if (picklist) {
             response.setHeader("Content-disposition", "attachment;filename=" + picklist.name + ".csv")
@@ -201,17 +222,26 @@ class PicklistController {
     }
 
     def list () {
+        if (!checkAdmin()) {
+            return
+        }
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [picklistInstanceList: Picklist.list(params), picklistInstanceTotal: Picklist.count()]
     }
 
     def create () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = new Picklist()
         picklistInstance.properties = params
         return [picklistInstance: picklistInstance]
     }
 
     def save () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = new Picklist(params)
 
         def existing
@@ -237,6 +267,9 @@ class PicklistController {
     }
 
     def show () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = Picklist.get(params.id)
         if (!picklistInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'picklist.label', default: 'Picklist'), params.id])}"
@@ -259,6 +292,9 @@ class PicklistController {
     }
 
     def edit () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = Picklist.get(params.id)
         if (!picklistInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'picklist.label', default: 'Picklist'), params.id])}"
@@ -270,6 +306,9 @@ class PicklistController {
     }
 
     def update () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = Picklist.get(params.id)
         if (picklistInstance) {
             if (params.version) {
@@ -297,6 +336,9 @@ class PicklistController {
     }
 
     def delete () {
+        if (!checkAdmin()) {
+            return
+        }
         def picklistInstance = Picklist.get(params.id)
         if (picklistInstance) {
             try {
@@ -317,9 +359,15 @@ class PicklistController {
     }
 
     def addCollectionCodeFragment() {
+        if (!checkAdmin()) {
+            return
+        }
     }
 
     def ajaxCreateNewCollectionCode() {
+        if (!checkAdmin()) {
+            return
+        }
         def code = params.code
         boolean success = false
         def message = ""

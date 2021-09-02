@@ -1,5 +1,8 @@
 package au.org.ala.volunteer
 
+import au.org.ala.web.AlaSecured
+
+@AlaSecured(value = ["ROLE_VP_ADMIN", "ROLE_VP_VALIDATOR"], redirectController = "index", anyRole = true)
 class ValidateController {
 
     def fieldSyncService

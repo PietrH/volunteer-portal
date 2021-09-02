@@ -16,16 +16,27 @@ class TemplateController {
         redirect(action: "list", params: params)
     }
 
-    def list() {
-        if (!userService.isAdmin()) {
-            response.sendError(SC_FORBIDDEN)
+    boolean checkAdmin() {
+        if(!userService.isAdmin()) {
+            flash.message = "You do not have permission to view this page"
+            redirect(url: "/")
+            return false
         }
+        return true
+    }
 
+    def list() {
+        if (!checkAdmin()) {
+            return
+        }
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         [templateInstanceList: Template.list(params), templateInstanceTotal: Template.count()]
     }
 
     def create() {
+        if (!checkAdmin()) {
+            return
+        }
         def templateInstance = new Template()
         templateInstance.author = userService.currentUserId
         templateInstance.properties = params
@@ -33,6 +44,9 @@ class TemplateController {
     }
 
     def save() {
+        if (!checkAdmin()) {
+            return
+        }
         params.author = userService.currentUserId
         def templateInstance = new Template(params)
         if (templateInstance.save(flush: true)) {
@@ -45,6 +59,9 @@ class TemplateController {
     }
 
     def show() {
+        if (!checkAdmin()) {
+            return
+        }
         def templateInstance = Template.get(params.id)
         if (!templateInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'template.label', default: 'Template'), params.id])}"
@@ -56,6 +73,9 @@ class TemplateController {
     }
 
     def edit() {
+        if (!checkAdmin()) {
+            return
+        }
         def templateInstance = Template.get(params.id)
         if (!templateInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'template.label', default: 'Template'), params.id])}"
@@ -68,6 +88,9 @@ class TemplateController {
     }
 
     def update() {
+        if (!checkAdmin()) {
+            return
+        }
         def templateInstance = Template.get(params.id)
         if (templateInstance) {
             if (params.version) {
@@ -104,6 +127,9 @@ class TemplateController {
     }
 
     def delete() {
+        if (!checkAdmin()) {
+            return
+        }
         def templateInstance = Template.get(params.id)
         if (templateInstance) {
             try {

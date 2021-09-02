@@ -140,6 +140,15 @@
 
     <div class="form-group">
         <div class="col-md-9 col-md-offset-3">
+            <label for="hasOverviewPage" class="checkbox">
+                <g:checkBox name="hasOverviewPage"
+                            checked="${projectInstance.hasOverviewPage}"/>&nbsp;<g:message code="project.general_settings.hasOverviewPage"/>
+            </label>
+        </div>
+    </div>
+
+    <div class="form-group">
+        <div class="col-md-9 col-md-offset-3">
             <g:actionSubmit class="save btn btn-primary" action="updateGeneralSettings"
                             value="${message(code: 'default.button.update.label', default: 'Update')}"/>
         </div>

@@ -6,11 +6,14 @@ import java.lang.reflect.Modifier
 @AlaSecured(value = ["ROLE_VP_ADMIN"], redirectController = "index")
 class SettingController {
 
+    def userService
     def settingsService
     def emailService
 
     def index() {
-
+        if (!checkAdmin()) {
+            return
+        }
         def settings = []
         def values = [:]
         def fields = SettingDefinition.class.declaredFields
@@ -31,7 +34,19 @@ class SettingController {
 
     }
 
+    boolean checkAdmin() {
+        if(!userService.isAdmin()) {
+            flash.message = "You do not have permission to view this page"
+            redirect(url: "/")
+            return false
+        }
+        return true
+    }
+
     def editSetting() {
+        if (!checkAdmin()) {
+            return
+        }
         def key = params.settingKey
 
         if (!key) {
@@ -46,6 +61,9 @@ class SettingController {
     }
 
     def saveSetting() {
+        if (!checkAdmin()) {
+            return
+        }
         def key = params.settingKey as String
         def value = params.settingValue as String
 
@@ -80,6 +98,9 @@ class SettingController {
     }
 
     def sendTestEmail() {
+        if (!checkAdmin()) {
+            return
+        }
         def to = params.to
 
         def name = message(code:'default.application.name', default: 'DigiVol')
