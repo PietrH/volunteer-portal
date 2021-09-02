@@ -162,11 +162,6 @@
             <div class="tab-pane-header">
                 <div class="row">
                     <div class="col-md-12">
-                        <div class="alert alert-info" style="margin-bottom: 0px">
-                            <%-- TODO Pull this from user details service --%>
-                            &nbsp;<g:message code="user.email.label" />:&nbsp;<a href="mailto:${userInstance.email}">${userInstance.email}</a>
-                        </div>
-                        <br/>
                         <g:link class="btn btn-success" controller="user" action="editRoles"
                                 id="${userInstance.id}"><g:message code="user.roles.manage.label" /></g:link>
                         <g:link class="btn btn-success" controller="user" action="edit"
