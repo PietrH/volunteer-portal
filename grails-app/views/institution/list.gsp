@@ -159,7 +159,7 @@
                 <div class="row">
                     <div class="col-sm-12">
                         <div class="pagination">
-                            <g:paginate total="${totalInstitutions}" prev="" next="" params="${[q: params.q]}"/>
+                            <g:paginate total="${totalInstitutions}" prev="" next="" params="${params}"/>
                         </div>
                     </div>
                 </div><!-- /.row -->
