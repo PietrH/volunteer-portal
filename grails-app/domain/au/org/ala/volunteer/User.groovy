@@ -17,7 +17,7 @@ class User {
 
     static mapping = {
         table 'vp_user'
-        displayName formula: '''FIRST_NAME || ' ' || LAST_NAME'''
+        displayName formula: '''concat(coalesce(FIRST_NAME, ''), '', coalesce(LAST_NAME, '')) '''
         version false
     }
 
