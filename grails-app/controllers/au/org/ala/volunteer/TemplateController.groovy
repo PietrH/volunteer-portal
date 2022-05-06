@@ -96,7 +96,7 @@ class TemplateController {
             if (params.version) {
                 def version = params.version.toLong()
                 if (templateInstance.version > version) {
-                    
+
                     templateInstance.errors.rejectValue("version", "default.optimistic.locking.failure", [message(code: 'template.label', default: 'Template')] as Object[], "Another user has updated this Template while you were editing")
                     render(view: "edit", model: [templateInstance: templateInstance])
                     return
@@ -156,6 +156,7 @@ class TemplateController {
     }
 
     def manageFields() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         if (templateInstance) {
             def fields = TemplateField.findAllByTemplate(templateInstance)?.sort { it.displayOrder }
@@ -165,6 +166,7 @@ class TemplateController {
     }
 
     def addTemplateFieldFragment() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         if (templateInstance) {
             def fields = TemplateField.findAllByTemplate(templateInstance)?.sort { it.displayOrder }
@@ -173,6 +175,7 @@ class TemplateController {
     }
 
     def moveFieldUp() {
+        checkAdmin()
         def field = TemplateField.get(params.int("fieldId"))
         if (field) {
             if (field.displayOrder > 1) {
@@ -191,6 +194,7 @@ class TemplateController {
     }
 
     def moveFieldDown() {
+        checkAdmin()
         def field = TemplateField.get(params.int("fieldId"))
         if (field) {
             def max = getLastDisplayOrder(field.template)
@@ -210,6 +214,7 @@ class TemplateController {
     }
 
     def moveFieldToPosition() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         def field = TemplateField.findByTemplateAndId(templateInstance, params.int("fieldId"))
         def newOrder = params.int("newOrder")
@@ -231,6 +236,7 @@ class TemplateController {
     }
 
     def cleanUpOrdering() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         if (templateInstance) {
             def fields = TemplateField.findAllByTemplate(templateInstance)?.sort { it.displayOrder }
@@ -244,6 +250,7 @@ class TemplateController {
     }
 
     def addField() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         def fieldType = params.fieldType
         def classifier = params.fieldTypeClassifier
@@ -277,8 +284,9 @@ class TemplateController {
         def max = results?.getAt(0) ?: 0
         return max
     }
-    
+
     def deleteField() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
         def field = TemplateField.findByTemplateAndId(templateInstance, params.int("fieldId"))
         if (field && templateInstance) {
@@ -288,6 +296,7 @@ class TemplateController {
     }
 
     def preview() {
+        checkAdmin()
         def templateInstance = Template.get(params.int("id"))
 
         def projectInstance = new Project(template: templateInstance, featuredOwner: "ALA", i18nName: "${templateInstance.name} Preview (${templateInstance.viewName})")
@@ -301,6 +310,7 @@ class TemplateController {
     }
 
     def exportFieldsAsCSV() {
+        checkAdmin()
 
         def templateInstance = Template.get(params.int("id"))
 
@@ -311,6 +321,7 @@ class TemplateController {
     }
 
     def importFieldsFromCSV() {
+        checkAdmin()
 
         MultipartFile f = request.getFile('uploadFile')
 
@@ -330,6 +341,7 @@ class TemplateController {
     }
 
     def cloneTemplate() {
+        checkAdmin()
         def template = Template.get(params.int("templateId"))
         def newName = params.newName
 
@@ -365,11 +377,13 @@ class TemplateController {
     }
 
     def cloneTemplateFragment() {
+        checkAdmin()
         def template = Template.get(params.int("sourceTemplateId"))
         [templateInstance: template]
     }
 
     def viewParamsForm() {
+        checkAdmin()
         def view = (params?.view ?: '') + 'Params'
         try { //if (resExists(view)) {
             render template: view

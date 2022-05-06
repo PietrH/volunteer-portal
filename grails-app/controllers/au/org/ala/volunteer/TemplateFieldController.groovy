@@ -3,12 +3,14 @@ package au.org.ala.volunteer
 class TemplateFieldController {
 
     static allowedMethods = [save: "POST", update: "POST", delete: "POST"]
+    def userService
 
     def index() {
         redirect(action: "list", params: params)
     }
 
     def list() {
+        checkAdmin()
         params.max = Math.min(params.max ? params.int('max') : 10, 100)
         def templateFieldInstanceList
         def templateFieldInstanceTotal
@@ -26,12 +28,14 @@ class TemplateFieldController {
     }
 
     def create() {
+        checkAdmin()
         def templateFieldInstance = new TemplateField()
         templateFieldInstance.properties = params
         return [templateFieldInstance: templateFieldInstance]
     }
 
     def save() {
+        checkAdmin()
         def templateFieldInstance = new TemplateField(params)
         if (templateFieldInstance.save(flush: true)) {
             flash.message = "${message(code: 'default.created.message', args: [message(code: 'templateField.label', default: 'TemplateField'), templateFieldInstance.id])}"
@@ -43,6 +47,7 @@ class TemplateFieldController {
     }
 
     def show() {
+        checkAdmin()
         def templateFieldInstance = TemplateField.get(params.id)
         if (!templateFieldInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'templateField.label', default: 'TemplateField'), params.id])}"
@@ -54,6 +59,7 @@ class TemplateFieldController {
     }
 
     def edit() {
+        checkAdmin()
         def templateFieldInstance = TemplateField.get(params.id)
         if (!templateFieldInstance) {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'templateField.label', default: 'TemplateField'), params.id])}"
@@ -68,6 +74,7 @@ class TemplateFieldController {
     }
 
     def update() {
+        checkAdmin()
         def templateFieldInstance = TemplateField.get(params.id)
         if (templateFieldInstance) {
             if (params.version) {
@@ -94,6 +101,7 @@ class TemplateFieldController {
     }
 
     def delete() {
+        checkAdmin()
         def templateFieldInstance = TemplateField.get(params.id)
         if (templateFieldInstance) {
             try {
@@ -110,5 +118,13 @@ class TemplateFieldController {
             flash.message = "${message(code: 'default.not.found.message', args: [message(code: 'templateField.label', default: 'TemplateField'), params.id])}"
             redirect(controller: 'template', action: "manageFields", id: templateFieldInstance.template.id)
         }
+    }
+
+    def checkAdmin() {
+        if (userService.isAdmin()) {
+            return
+        }
+        flash.message = message(code: "admin.you_do_not_have_permission")
+        redirect(uri:"/")
     }
 }
