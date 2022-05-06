@@ -1,5 +1,9 @@
 package au.org.ala.volunteer
 
+import grails.gorm.PagedResultList
+
+import java.util.stream.Collectors
+
 class InstitutionController {
 
     def projectService
@@ -50,6 +54,7 @@ class InstitutionController {
     def list() {
         List<Institution> institutions
         def totalCount
+        def result
 
         if (!params.sort) {
             params.sort = 'i18nName.'+WebUtils.getCurrentLocaleAsString()
@@ -70,7 +75,7 @@ class InstitutionController {
             def query = "%${params.q}%"
 
             /* With internationalization */
-            institutions = (List<Institution>)Institution.createCriteria().list {
+            result = (PagedResultList<Institution>) Institution.createCriteria().list(max: params.max, offset: params.offset) {
                 or {
                     i18nName {
                         ilike WebUtils.getCurrentLocaleAsString(), query
@@ -80,11 +85,11 @@ class InstitutionController {
                     }
                 }
             }
-            totalCount = institutions.size()
-
+            totalCount = result.totalCount
+            institutions = result.collect()
         } else {
             institutions = Institution.list(params)
-            totalCount = institutions.size()
+            totalCount = Institution.count
         }
 
         def projectCounts = institutionService.getProjectCounts(institutions)
