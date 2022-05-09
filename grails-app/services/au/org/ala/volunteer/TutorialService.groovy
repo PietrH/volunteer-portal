@@ -1,5 +1,7 @@
 package au.org.ala.volunteer
 
+import groovyx.net.http.HttpResponseException
+import org.apache.commons.io.IOExceptionWithCause
 import org.springframework.web.multipart.MultipartFile
 import java.util.regex.Pattern
 
@@ -8,17 +10,23 @@ class TutorialService {
     def grailsApplication
 
     private String getTutorialDirectory() {
-        return grailsApplication.config.images.home + "/tutorials"
+        return new File((String)grailsApplication.config.images.home + "/tutorials").getCanonicalPath()
     }
 
     private String createFilePath(String name) {
         return tutorialDirectory + "/" + name
     }
 
+    private void verifyInTutorialDirectory(File file) {
+        if (!file.getCanonicalPath().startsWith(tutorialDirectory)) {
+            throw new IOException("Cannot interact with files outside of " + tutorialDirectory)
+        }
+    }
+
     def listTutorials() {
         def dir = new File(tutorialDirectory)
         if (!dir.exists()) {
-            dir.mkdirs();
+            dir.mkdirs()
         }
 
         def files = dir.listFiles()
@@ -33,13 +41,17 @@ class TutorialService {
 
     def uploadTutorialFile(MultipartFile file) {
         def filePath = createFilePath(file.originalFilename)
-        def newFile = new File(filePath);
+        def newFile = new File(filePath)
+        verifyInTutorialDirectory(newFile)
+
         file.transferTo(newFile.absoluteFile);
     }
 
     def deleteTutorial(String name) {
         def filePath = createFilePath(name)
         def file = new File(filePath)
+        verifyInTutorialDirectory(file)
+
         if (file.exists()) {
             file.delete()
             return true
@@ -51,8 +63,12 @@ class TutorialService {
     def renameTutorial(String oldname, String newname) {
         def filePath = createFilePath(oldname)
         def file = new File(filePath)
+        verifyInTutorialDirectory(file)
+
         if (file.exists()) {
             def newFile = new File(createFilePath(newname))
+            verifyInTutorialDirectory(file)
+
             if (!newFile.exists()) {
                 file.renameTo(newFile)
             }
