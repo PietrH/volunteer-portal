@@ -331,7 +331,7 @@ class TemplateController {
 
             def templateInstance = Template.get(params.int("id"))
             if (templateInstance) {
-                templateFieldService.importFieldsFromCSV(templateInstance, f)
+                templateFieldService.importFieldsFromCSV(templateInstance, f, WebUtils.getCurrentLocaleAsString())
             } else {
                 flash.message = message(code: 'template.missing_template_id')
             }

@@ -5,35 +5,51 @@ import org.springframework.web.multipart.MultipartFile
 
 class TemplateFieldService {
 
-    def importFieldsFromCSV(Template template, MultipartFile file) {
+    def importFieldsFromCSV(Template template, MultipartFile file, String locale) {
 
         if (!template || !file) {
             return
         }
 
-        // Delete any existing fields for this template
         def existingFields = TemplateField.findAllByTemplate(template)
-        if (existingFields) {
-            existingFields.each { field ->
-                field.delete()
-            }
-        }
 
         InputStream is = file.inputStream;
-        is.eachCsvLine { String[] tokens ->
+        is.toCsvReader(['charset':'UTF-8']).eachLine { String[] tokens ->
+            def field = existingFields.find {f -> f.fieldType.equals(tokens[0] as DarwinCoreField)}
+            if (field == null) {
+                field = new TemplateField(template: template)
+            }
 
-            def field = new TemplateField(template: template)
+            if (tokens.size() == 0) {
+                // Skip empty lines
+                return;
+            }
+
+            if (tokens.size() < 9) {
+                throw new RuntimeException("CSV doesn't have enough columns on all lines.");
+            }
+
             field.fieldType = tokens[0] as DarwinCoreField
-            field.label = tokens[1]
             field.defaultValue = tokens[2]
             field.category = tokens[3] as FieldCategory
             field.type = tokens[4] as FieldType
             field.mandatory = tokens[5] as Boolean
             field.multiValue = tokens[6] as Boolean
-            field.helpText = tokens[7]
             field.validationRule = tokens[8]
             field.displayOrder = tokens[9] ? Integer.parseInt(tokens[9]) : null
             field.layoutClass = tokens[10]
+
+            if (field.label == null) {
+                field.label = new Translation(locale, tokens[1])
+            } else {
+                field.label[locale] = tokens[1]
+            }
+            if (field.helpText == null) {
+                field.helpText = new Translation(locale, tokens[7])
+            } else {
+                field.helpText[locale] = tokens[7]
+            }
+
             field.save(flush: true)
         }
 
