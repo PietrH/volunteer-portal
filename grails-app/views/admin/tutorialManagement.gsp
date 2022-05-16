@@ -119,7 +119,7 @@
             bootbox.confirm("Are you sure?", function (result) {
                 _result = result;
                 if(result) {
-                   name = escape(name);
+                   name = encodeURIComponent(name);
                    window.location = "${createLink(controller: 'admin', action: 'deleteTutorial')}?tutorialFile=" + name;
                 }
             });
@@ -143,8 +143,8 @@
             var oldName = $("#oldName").val();
             var newName = $("#newName").val();
             if (oldName && newName) {
-                oldName = escape(oldName);
-                newName = escape(newName);
+                oldName = encodeURIComponent(oldName);
+                newName = encodeURIComponent(newName);
                 window.location = "${createLink(controller: 'admin', action: 'renameTutorial')}?tutorialFile=" + oldName + "&newName=" + newName;
             }
         });
