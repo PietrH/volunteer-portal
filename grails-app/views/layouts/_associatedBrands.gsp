@@ -11,7 +11,7 @@
             </div>
 -->
             <div class="col-sm-5">
-                <asset:image src="doedat/meise.jpg" class="logo-agi"/>
+                <asset:image src="doedat/meise.png" class="logo-agi"/>
                 <asset:image src="doedat/vlaanderen2.jpg" class="logo-agi"/>
             </div>
         </div>
