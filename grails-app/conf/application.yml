@@ -282,7 +282,7 @@ environments:
     development:
         grails:
             assets:
-                storagePath: C:\data\volunteer-portal
+                storagePath: /data/volunteer-portal
         dataSource:
             dbCreate: update
             url: jdbc:postgresql://localhost/volunteers
