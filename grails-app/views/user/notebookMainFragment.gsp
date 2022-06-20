@@ -30,7 +30,7 @@
     <div class="row">
         <div class="span6">
             <div class="media">
-                <a class="pull-left" href="//en.gravatar.com/" class="external" target="_blank" id="gravitarLink"
+                <a class="pull-left" class="external" target="_blank" id="gravitarLink"
                    title="${message(code: 'user.notebookMain.to_customise_this_avatar')}">
                     <img id="gravatar"
                          src="//www.gravatar.com/avatar/${userInstance.email.toLowerCase().encodeAsMD5()}?s=125"

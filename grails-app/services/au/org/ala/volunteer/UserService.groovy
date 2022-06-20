@@ -37,23 +37,31 @@ class UserService {
      */
     def registerCurrentUser() {
         def userId = authService.userId
-        def displayName = authService.displayName
+        if (userId != null) {
+            return
+        }
+
+        def currentUser = User.findByUserId(userId)
         def firstName = AuthenticationUtils.getPrincipalAttribute(RequestContextHolder.currentRequestAttributes().request, AuthenticationUtils.ATTR_FIRST_NAME)
         def lastName = AuthenticationUtils.getPrincipalAttribute(RequestContextHolder.currentRequestAttributes().request, AuthenticationUtils.ATTR_LAST_NAME)
-        log.info("Checking user is registered: ${displayName} (UserId=${userId})")
-        if (userId) {
-            if (User.findByUserId(userId) == null) {
-                log.info("Registering new user: ${displayName} (UserId=${userId})")
-                User user = new User()
-                user.userId = userId
-                user.email = currentUserEmail
-                user.created = new Date()
-                user.firstName = firstName
-                user.lastName = lastName
-                user.save(flush: true)
-                // Notify admins that a new user has registered
-                notifyNewUser(user)
-            }
+
+        if (currentUser != null) {
+            log.info("Updating user from auth info...")
+            currentUser.firstName = firstName
+            currentUser.lastName = lastName
+            currentUser.save()
+        } else {
+            def displayName = authService.displayName
+            log.info("Registering new user: ${displayName} (UserId=${userId})")
+            User user = new User()
+            user.userId = userId
+            user.email = currentUserEmail
+            user.created = new Date()
+            user.firstName = firstName
+            user.lastName = lastName
+            user.save(flush: true)
+            // Notify admins that a new user has registered
+            notifyNewUser(user)
         }
     }
 
@@ -444,19 +452,8 @@ class UserService {
         if (!userid) return [displayName: '', email: '']
         else if ('system' == userid) return [displayName: userid, email: userid]
 
-        def details = null
-
-        try {
-            details = authService.getUserForUserId(userid)
-        } catch (Exception e) {
-            log.warn("couldn't get user details from web service", e)
-        }
-
-        if (details) return [displayName: details?.displayName ?: '', email: details?.userName ?: '']
-        else {
-            def user = User.findByUserId(userid)
-            return user ? [displayName: user.displayName ?: '', email: user.email ?: ''] : [displayName: '', email: '']
-        }
+        def user = User.findByUserId(userid)
+        return user ? [displayName: user.displayName ?: '', email: user.email ?: ''] : [displayName: '', email: '']
     }
 
     def idForUserProperty(String propertyName, String propertyValue) {

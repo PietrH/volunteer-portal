@@ -39,7 +39,7 @@ class VolunteerTagLib {
     }
 
     def showCurrentUserName = {attrs, body ->
-        out << userService.authService.displayName
+        out << userService.currentUser.displayName
     }
 
     def showCurrentUserEmail = {attrs, body ->
@@ -735,7 +735,7 @@ class VolunteerTagLib {
     }
 
     private def propForUserId(def attrs, String prop) {
-        def id = attrs.remove('id')
+        def id = attrs.get('id')
 
         userService.propertyForUserId(id, prop)
     }
@@ -804,16 +804,16 @@ class VolunteerTagLib {
      */
     def addApplicationMetaTags = { attrs ->
         def metaList = [
-                'app.version', 
+                'app.version',
                 'app.grailsVersion',
                 'build.ci',
-                'build.date', 
-                'build.jdk', 
-                'build.number', 
-                'git.branch', 
+                'build.date',
+                'build.jdk',
+                'build.number',
+                'git.branch',
                 'git.commit',
-                'git.slug', 
-                'git.tag', 
+                'git.slug',
+                'git.tag',
                 'git.timestamp'
         ]
         def mb = new MarkupBuilder(out)

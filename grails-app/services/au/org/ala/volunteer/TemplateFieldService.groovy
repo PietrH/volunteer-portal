@@ -1,7 +1,10 @@
 package au.org.ala.volunteer
 
 import grails.converters.JSON
+import grails.plugins.csv.CSVWriter
 import org.springframework.web.multipart.MultipartFile
+
+import javax.servlet.http.HttpServletResponse
 
 class TemplateFieldService {
 
@@ -55,7 +58,7 @@ class TemplateFieldService {
 
     }
 
-    def exportFieldToCSV(Template templateInstance, response) {
+    def exportFieldToCSV(Template templateInstance, HttpServletResponse response) {
 
         if (!templateInstance) {
             return
@@ -63,8 +66,9 @@ class TemplateFieldService {
 
         response.setHeader("Content-Disposition", "attachment;filename=fields.txt");
         response.addHeader("Content-type", "text/plain")
+        log.warn("Character encoding is ${response.characterEncoding}")
 
-        def writer = new BVPCSVWriter( (Writer) response.writer,  {
+        def writer = new CSVWriter( (Writer) response.writer,  {
             'fieldType' { it.fieldType?.toString() }
             'label' { it.label ?: '' }
             'defaultValue' { it.defaultValue ?: '' }
