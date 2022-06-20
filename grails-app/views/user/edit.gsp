@@ -11,10 +11,10 @@
 <body class="admin">
 
 <cl:headerContent crumbLabel="${message(code: 'user.edit.edit_user')}"
-                  title="${message(code: 'user.edit.edit_user')} ${userInstance?.userId} - ${userDetails?.displayName} (${userDetails?.userName})" selectedNavItem="bvpadmin">
+                  title="${message(code: 'user.edit.edit_user')} ${userInstance?.userId} - ${userInstance.firstName}" selectedNavItem="bvpadmin">
     <%
         pageScope.crumbs = []
-        pageScope.crumbs << [link: createLink(controller: 'user', action: 'show', id: userInstance?.id), label: userDetails?.displayName?:"user"]
+        pageScope.crumbs << [link: createLink(controller: 'user', action: 'show', id: userInstance?.id), label: userInstance.firstName?:"user"]
     %>
 </cl:headerContent>
 
@@ -70,13 +70,23 @@
                             </div>
                         </div>
 
-                        <div class="form-group  ${hasErrors(bean: userInstance, field: 'displayName', 'has-error')}">
-                            <label for="displayName" class="control-label col-md-3">
-                                <g:message code="user.displayName.label" default="Display Name"/>
+                        <div class="form-group  ${hasErrors(bean: userInstance, field: 'firstName', 'has-error')}">
+                            <label for="firstName" class="control-label col-md-3">
+                                <g:message code="user.firstName.label" default="First Name"/>
                             </label>
                             <div class="col-md-6">
-                                <g:textField name="displayName" class="form-control"
-                                             value="${fieldValue(bean: userInstance, field: 'displayName')}"/>
+                                <g:textField name="firstName" class="form-control"
+                                             value="${fieldValue(bean: userInstance, field: 'firstName')}"/>
+                            </div>
+                        </div>
+
+                        <div class="form-group  ${hasErrors(bean: userInstance, field: 'lastName', 'has-error')}">
+                            <label for="lastName" class="control-label col-md-3">
+                                <g:message code="user.lastName.label" default="Last Name"/>
+                            </label>
+                            <div class="col-md-6">
+                                <g:textField name="lastName" class="form-control"
+                                             value="${fieldValue(bean: userInstance, field: 'lastName')}"/>
                             </div>
                         </div>
 
