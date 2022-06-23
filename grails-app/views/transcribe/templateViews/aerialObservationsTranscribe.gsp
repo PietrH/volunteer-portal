@@ -8,7 +8,7 @@
         <title><cl:pageTitle title="${(validator) ? message(code: 'transcribe.templateViews.all.validate') : message(code: 'transcribe.templateViews.all.expedition')} ${taskInstance?.project?.i18nName}" /></title>
         <style type="text/css">
         #image-container {
-            height: 100px;
+            height: 500px;
         }
         </style>
     </head>
